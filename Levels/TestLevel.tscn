@@ -14,3 +14,4 @@ position = Vector2( 454, 174 )
 move_speed = 200.0
 jump_strength = 500.0
 gravity_scale = 1000.0
+high_jump_strength = 700.0
