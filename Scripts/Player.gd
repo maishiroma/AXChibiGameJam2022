@@ -1,6 +1,8 @@
 # This allows for movement by force
 extends KinematicBody2D
 
+signal spring_door_activate
+
 # What direction is the player going UP
 const UP_DIRECTION = Vector2.UP
 
@@ -133,6 +135,9 @@ func _on_HammerHitBox_body_entered(body):
 		is_high_jump = true
 		curr_high_jump_strength = lerp(curr_high_jump_strength, jump_strength * 1.1, high_jump_mod)
 		$HammerHitBox/HammerJumpCooldown.start()
+	elif body.is_in_group("SpringDoor"):
+		emit_signal("spring_door_activate")
+
 
 # When the timer ends, we stop the higher jump
 func _on_HammerJumpCooldown_timeout():
