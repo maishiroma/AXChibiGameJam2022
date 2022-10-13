@@ -26,6 +26,7 @@ scale = Vector2( 1.00199, 0.311321 )
 
 [node name="Player" parent="." instance=ExtResource( 2 )]
 position = Vector2( 329, 448 )
+scale = Vector2( 0.2, 0.2 )
 move_speed = 200.0
 jump_strength = 500.0
 gravity_scale = 1000.0
@@ -40,16 +41,21 @@ position = Vector2( 93, 967 )
 scale = Vector2( 4.96, 1 )
 
 [node name="Enemy" parent="." instance=ExtResource( 6 )]
-position = Vector2( -265, 503 )
-move_speed = 1.0
+position = Vector2( -265, 245 )
+scale = Vector2( 0.3, 0.3 )
+move_speed = -100.0
+is_horizontal = false
 
 [node name="Checkpoint" parent="." instance=ExtResource( 4 )]
-position = Vector2( -556, 477 )
+position = Vector2( -549, 498 )
+scale = Vector2( 0.3, 0.3 )
 
 [node name="SpringDoor" parent="." instance=ExtResource( 7 )]
-position = Vector2( 864, 512 )
+position = Vector2( 852, 480 )
+scale = Vector2( 0.5, 0.5 )
 scene_to_load = "TestLevel2"
 
+[connection signal="hit_enemy" from="Player" to="Enemy" method="_on_Player_hit_enemy"]
 [connection signal="spring_door_activate" from="Player" to="SpringDoor" method="_on_Player_spring_door_activate"]
 [connection signal="body_entered" from="DeathPlane" to="Player" method="_on_DeathPlane_body_entered"]
 [connection signal="damage_player" from="Enemy" to="Player" method="_on_Enemy_damage_player"]

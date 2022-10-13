@@ -4,12 +4,17 @@ extends StaticBody2D
 export var scene_to_load = "TestLevel"
 
 var current_scene = null
+var has_activated = false
 
 # Sets the variables up
 func _ready():
 	var root = get_tree().get_root()
 	current_scene = root.get_child(root.get_child_count() - 1)
 
+func _process(delta):
+	if !has_activated:
+		$AnimatedSprite.animation = "inactive"
+	$AnimatedSprite.play()
 
 func _deferred_goto_scene(path):
 	# It is now safe to remove the current scene
@@ -29,4 +34,16 @@ func _deferred_goto_scene(path):
 
 # When the player activates the spring, the scene changes
 func _on_Player_spring_door_activate():
-	get_tree().change_scene("res://Levels/" + scene_to_load + ".tscn")
+	if !has_activated:
+		has_activated = true
+		$AnimatedSprite.animation = "activate"
+		$AnimatedSprite.speed_scale = 2
+		$ActivationTimer.start()
+
+func _on_ActivationTimer_timeout():
+	return get_tree().change_scene("res://Levels/" + scene_to_load + ".tscn")
+
+func _on_AnimatedSprite_animation_finished():
+	if $AnimatedSprite.get_animation() == "activate":
+		$AnimatedSprite.animation = "idle"
+		$AnimatedSprite.speed_scale = 1

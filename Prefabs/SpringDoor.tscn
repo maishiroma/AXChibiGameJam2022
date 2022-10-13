@@ -1,26 +1,47 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=10 format=2]
 
-[ext_resource path="res://icon.png" type="Texture" id=1]
+[ext_resource path="res://Art/SpringDoor/SpringDoor_Active_3.png" type="Texture" id=1]
 [ext_resource path="res://Scripts/SpringDoor.gd" type="Script" id=2]
+[ext_resource path="res://Art/SpringDoor/SpringDoor_Active_5.png" type="Texture" id=3]
+[ext_resource path="res://Art/SpringDoor/SpringDoor_Active_1.png" type="Texture" id=4]
+[ext_resource path="res://Art/SpringDoor/SpringDoor_Active_2.png" type="Texture" id=5]
+[ext_resource path="res://Art/SpringDoor/SpringDoor_Active_4.png" type="Texture" id=6]
+[ext_resource path="res://Art/SpringDoor/SpringDoor_Inactive.png" type="Texture" id=7]
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
-"frames": [ ExtResource( 1 ) ],
+"frames": [ ExtResource( 4 ), ExtResource( 5 ), ExtResource( 1 ), ExtResource( 6 ), ExtResource( 3 ) ],
+"loop": false,
+"name": "activate",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 1 ), ExtResource( 6 ), ExtResource( 3 ) ],
 "loop": true,
-"name": "Normal",
+"name": "idle",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 7 ) ],
+"loop": true,
+"name": "inactive",
 "speed": 5.0
 } ]
 
 [sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 31, 31.5 )
+extents = Vector2( 92.5, 114 )
 
 [node name="SpringDoor" type="StaticBody2D" groups=["SpringDoor"]]
 script = ExtResource( 2 )
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
 frames = SubResource( 1 )
-animation = "Normal"
+animation = "inactive"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2( 0, -0.5 )
+position = Vector2( 1.5, 17 )
 shape = SubResource( 2 )
+
+[node name="ActivationTimer" type="Timer" parent="."]
+one_shot = true
+
+[connection signal="animation_finished" from="AnimatedSprite" to="." method="_on_AnimatedSprite_animation_finished"]
+[connection signal="timeout" from="ActivationTimer" to="." method="_on_ActivationTimer_timeout"]
