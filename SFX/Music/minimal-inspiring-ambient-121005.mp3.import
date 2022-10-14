@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/minimal-inspiring-ambient-121005.mp3-0cfc93fe20bd96de259010802e93fdb0.mp3str"
+
+[deps]
+
+source_file="res://SFX/Music/minimal-inspiring-ambient-121005.mp3"
+dest_files=[ "res://.import/minimal-inspiring-ambient-121005.mp3-0cfc93fe20bd96de259010802e93fdb0.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0

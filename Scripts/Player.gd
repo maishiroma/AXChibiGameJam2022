@@ -2,6 +2,7 @@
 extends KinematicBody2D
 
 signal spring_door_activate
+signal hit_enemy(collider_name)
 
 # What direction is the player going UP
 const UP_DIRECTION = Vector2.UP
@@ -20,6 +21,7 @@ var curr_high_jump_strength = 0.0
 
 var saved_checkpoint = Vector2.ZERO
 
+var can_input = true
 var is_falling = false	# check if we are grounded
 var is_jumping = false # check if we are jumping
 var is_jump_canceled = false # check if we cancelled the jump so we can have more control
@@ -32,8 +34,9 @@ var is_deploying_hammer = false # are we deploying the hammer?
 func _ready():
 	_on_Checkpoint_activated_checkpoint()
 
-func _process(delta):
+func _process(_delta):
 	animate_player()
+	play_sound_effects()
 	
 	# Activates/deactivates the hitbox
 	$HammerHitBox/CollisionShape2D.disabled = !is_deploying_hammer
@@ -68,19 +71,26 @@ func _physics_process(delta):
 
 # Take player input and modify the move_velocity accordingly
 func get_input():
-	is_jumping = Input.is_action_just_pressed("Jump") and is_on_floor()
-	is_jump_canceled = Input.is_action_just_released("Jump") and move_velocity.y < 0.0
-	
-	if Input.is_action_just_pressed("deploy_hammer") and is_falling and numb_high_jumps < max_high_jumps:
-		is_deploying_hammer = true
-		$HammerHitBox/HammerInput.start()
+	if can_input:
+		is_jumping = Input.is_action_just_pressed("Jump") and is_on_floor()
+		is_jump_canceled = Input.is_action_just_released("Jump") and move_velocity.y < 0.0
+		
+		if Input.is_action_just_pressed("deploy_hammer") and is_falling and numb_high_jumps < max_high_jumps:
+			is_deploying_hammer = true
+			$PlayerSprite.animation = "deploy_hammer_start"
+			$PlayerSprite.speed_scale = 3
+			$HammerHitBox/HammerInput.start()
 
-	var horizontal_direction = (Input.get_action_strength("move_right") - Input.get_action_strength("move_left"))
-	move_velocity.x = horizontal_direction * move_speed
+		var horizontal_direction = (Input.get_action_strength("move_right") - Input.get_action_strength("move_left"))
+		if horizontal_direction != 0:
+			$PlayerSprite.flip_h = horizontal_direction < 0
+		$HammerHitBox.position.x *= sign(horizontal_direction)
+		move_velocity.x = horizontal_direction * move_speed
 
 # Animtes the player with sprites
 func animate_player():
 	if is_on_floor():
+		$PlayerSprite.speed_scale = 1
 		if is_running:
 			$PlayerSprite.animation = "move"
 		elif is_idle:
@@ -90,11 +100,10 @@ func animate_player():
 			$PlayerSprite.animation = "jump"
 		elif is_high_jump:
 			$PlayerSprite.animation = "jump_hammer"
-		elif is_deploying_hammer:
-			$PlayerSprite.animation = "deploy_hammer"
-		elif is_falling:
-			# Replace with Falling Animation
-			$PlayerSprite.animation = "idle"
+		elif is_falling and !is_deploying_hammer:
+			$PlayerSprite.animation = "falling"
+	
+	$PlayerSprite.play()
 
 # Saves the current position of the player and camera
 func save_spawn():
@@ -118,6 +127,13 @@ func respawn():
 	for curr_node in get_tree().get_nodes_in_group("MainCamera"):
 		curr_node.position = curr_node.saved_camera_position
 
+func play_sound_effects():
+	if is_jumping and !$PlayerSounds/Jump.playing:
+		$PlayerSounds/Jump.play()
+	
+	if is_on_floor():
+		$PlayerSounds/Jump.stop()
+
 # If we hit a platform while the hammer is out, we perform a high jump
 func _on_HammerHitBox_body_entered(body):
 	if body.is_in_group("Ground"):
@@ -129,15 +145,24 @@ func _on_HammerHitBox_body_entered(body):
 			$HammerHitBox/HammerJumpCooldown.start()
 		else:
 			is_high_jump = false
+		$PlayerSounds/HammerHit.play()
 	elif body.is_in_group("Enemy"):
 		numb_high_jumps = 1
 		is_deploying_hammer = false
 		is_high_jump = true
 		curr_high_jump_strength = lerp(curr_high_jump_strength, jump_strength * 1.1, high_jump_mod)
+		# We pass an extra argument to the signal
+		emit_signal("hit_enemy", body.name)
 		$HammerHitBox/HammerJumpCooldown.start()
+		$PlayerSounds/HammerHit.play()
 	elif body.is_in_group("SpringDoor"):
+		is_high_jump = true
+		is_deploying_hammer = false
+		can_input = false
+		move_velocity.x = 0.0
+		curr_high_jump_strength = lerp(curr_high_jump_strength, jump_strength * 4, high_jump_mod)
 		emit_signal("spring_door_activate")
-
+		$PlayerSounds/HammerHit.play()
 
 # When the timer ends, we stop the higher jump
 func _on_HammerJumpCooldown_timeout():
@@ -148,7 +173,8 @@ func _on_Checkpoint_activated_checkpoint():
 	save_spawn()
 
 # On touching a Death Plane, we move back to the last checkpoint we touched
-func _on_DeathPlane_body_entered(body):
+func _on_DeathPlane_body_entered(_body):
+	$PlayerSounds/Die.play()
 	respawn()
 
 # After a set time, we disenage the hammer
@@ -157,4 +183,11 @@ func _on_HammerInput_timeout():
 
 # When the player touches an enemy, they are sent back to the last spawn
 func _on_Enemy_damage_player():
+	$PlayerSounds/Die.play()
 	respawn()
+
+# When this animation finishes playing, we go to the deploy_hammer_animation
+func _on_PlayerSprite_animation_finished():
+	if $PlayerSprite.get_animation() == "deploy_hammer_start":
+		$PlayerSprite.speed_scale = 1
+		$PlayerSprite.animation = "deploy_hammer_stay"

@@ -1,17 +1,11 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://Prefabs/Player.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Prefabs/DummyPlatform.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Prefabs/MainCamera.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Prefabs/SpringDoor.tscn" type="PackedScene" id=4]
 
 [node name="TestLevel2" type="Node2D"]
-
-[node name="Player" parent="." instance=ExtResource( 1 )]
-position = Vector2( 329, 448 )
-move_speed = 200.0
-jump_strength = 500.0
-gravity_scale = 1000.0
-max_high_jumps = 2
 
 [node name="Platforms" type="Node2D" parent="."]
 
@@ -30,3 +24,17 @@ scale = Vector2( 1.00199, 0.311321 )
 [node name="MainCamera" parent="." instance=ExtResource( 3 )]
 position = Vector2( 600, 208 )
 camera_scroll_amount = 100
+
+[node name="SpringDoor" parent="." instance=ExtResource( 4 )]
+position = Vector2( 852, 480 )
+scale = Vector2( 0.5, 0.5 )
+
+[node name="Player" parent="." instance=ExtResource( 1 )]
+position = Vector2( 329, 448 )
+scale = Vector2( 0.2, 0.2 )
+move_speed = 200.0
+jump_strength = 500.0
+gravity_scale = 1000.0
+max_high_jumps = 2
+
+[connection signal="spring_door_activate" from="Player" to="SpringDoor" method="_on_Player_spring_door_activate"]

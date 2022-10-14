@@ -10,6 +10,7 @@ export var is_horizontal = true
 
 var move_direction = 0
 var move_velocity = Vector2.ZERO
+var is_hit = false
 
 # Randomly selects the move_direction of the enemy
 func _ready():
@@ -26,14 +27,32 @@ func _ready():
 	
 	$PatrolTime.start()
 
+func animation_set():
+	$AnimatedSprite.flip_h = sign(move_direction)
+	if move_velocity.normalized() != Vector2.ZERO:
+		if is_on_floor():
+			if is_hit:
+				$AnimatedSprite.animation = "ground_hit"
+			else:
+				$AnimatedSprite.animation = "ground_moving"
+		else:
+			if is_hit:
+				$AnimatedSprite.animation = "air_hit"
+			else:
+				$AnimatedSprite.animation = "air_moving"
+	$AnimatedSprite.play()
+
+func _process(_delta):
+	animation_set()
+
 func _physics_process(delta):
 	# Standard Movement
 	if is_horizontal:
 		move_velocity.x = move_direction * move_speed
+		# Gravity
+		move_velocity.y += gravity_scale * delta
 	else:
 		move_velocity.y = move_direction * move_speed
-	# Gravity
-	move_velocity.y += gravity_scale * delta
 
 	# Translate object
 	move_velocity = move_and_slide(move_velocity, UP_DIRECTION)
@@ -45,3 +64,11 @@ func _on_PatrolTime_timeout():
 func _on_DamageHitBox_body_entered(body):
 	if body.is_in_group("Player"):
 		emit_signal("damage_player")
+
+func _on_HitTimer_timeout():
+	is_hit = false
+
+func _on_Player_hit_enemy(collider_name):
+	if name == collider_name:
+		is_hit = true
+		$HitTimer.start()

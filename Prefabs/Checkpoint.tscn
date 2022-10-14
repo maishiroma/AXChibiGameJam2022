@@ -1,13 +1,19 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=12 format=2]
 
-[ext_resource path="res://Art/Dummy/Dummy_CheckPoint.png" type="Texture" id=1]
-[ext_resource path="res://Art/Dummy/Dummy_CheckPoint_2.png" type="Texture" id=2]
+[ext_resource path="res://Art/Checkpoint/Checkpoint_Inactive.png" type="Texture" id=1]
+[ext_resource path="res://Art/Checkpoint/Checkpoint_Active_1.png" type="Texture" id=2]
 [ext_resource path="res://Scripts/Checkpoint.gd" type="Script" id=3]
+[ext_resource path="res://Art/Checkpoint/Checkpoint_Idle_3.png" type="Texture" id=4]
+[ext_resource path="res://Art/Checkpoint/Checkpoint_Idle_1.png" type="Texture" id=5]
+[ext_resource path="res://Art/Checkpoint/Checkpoint_Idle_2.png" type="Texture" id=6]
+[ext_resource path="res://Art/Checkpoint/Checkpoint_Active_2.png" type="Texture" id=7]
+[ext_resource path="res://Art/Checkpoint/Checkpoint_Active_4.png" type="Texture" id=8]
+[ext_resource path="res://Art/Checkpoint/Checkpoint_Active_3.png" type="Texture" id=9]
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
-"frames": [ ExtResource( 2 ) ],
-"loop": true,
+"frames": [ ExtResource( 2 ), ExtResource( 7 ), ExtResource( 9 ), ExtResource( 8 ) ],
+"loop": false,
 "name": "activate",
 "speed": 5.0
 }, {
@@ -15,13 +21,17 @@ animations = [ {
 "loop": true,
 "name": "deactivate",
 "speed": 5.0
+}, {
+"frames": [ ExtResource( 5 ), ExtResource( 6 ), ExtResource( 4 ) ],
+"loop": true,
+"name": "idle",
+"speed": 5.0
 } ]
 
 [sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 200.5, 280.5 )
+extents = Vector2( 124, 157.5 )
 
 [node name="Checkpoint" type="Area2D" groups=["Checkpoint"]]
-scale = Vector2( 0.2, 0.2 )
 script = ExtResource( 3 )
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
@@ -29,7 +39,8 @@ frames = SubResource( 1 )
 animation = "deactivate"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2( -1.5, 3.5 )
+position = Vector2( -3, 0.5 )
 shape = SubResource( 2 )
 
 [connection signal="body_entered" from="." to="." method="_on_Checkpoint_body_entered"]
+[connection signal="animation_finished" from="AnimatedSprite" to="." method="_on_AnimatedSprite_animation_finished"]

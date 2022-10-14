@@ -1,41 +1,68 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=13 format=2]
 
-[ext_resource path="res://icon.png" type="Texture" id=1]
+[ext_resource path="res://Art/Enemy/Enemy_Air_3.png" type="Texture" id=1]
 [ext_resource path="res://Scripts/Enemy.gd" type="Script" id=2]
+[ext_resource path="res://Art/Enemy/Enemy_Air_1.png" type="Texture" id=3]
+[ext_resource path="res://Art/Enemy/Enemy_Air_2.png" type="Texture" id=4]
+[ext_resource path="res://Art/Enemy/Enemy_Ground_2.png" type="Texture" id=5]
+[ext_resource path="res://Art/Enemy/Enemy_Ground_1.png" type="Texture" id=6]
+[ext_resource path="res://Art/Enemy/Enemy_Ground_3.png" type="Texture" id=7]
+[ext_resource path="res://Art/Enemy/Enemy_Ground_Hit.png" type="Texture" id=8]
+[ext_resource path="res://Art/Enemy/Enemy_Air_Hit.png" type="Texture" id=9]
 
 [sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 32, 31 )
+extents = Vector2( 83.5, 62.5 )
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
-"frames": [ ExtResource( 1 ) ],
+"frames": [ ExtResource( 9 ) ],
 "loop": true,
-"name": "Idle",
+"name": "air_hit",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 3 ), ExtResource( 4 ), ExtResource( 1 ) ],
+"loop": true,
+"name": "air_moving",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 8 ) ],
+"loop": true,
+"name": "ground_hit",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 6 ), ExtResource( 5 ), ExtResource( 7 ) ],
+"loop": true,
+"name": "ground_moving",
 "speed": 5.0
 } ]
 
 [sub_resource type="RectangleShape2D" id=3]
-extents = Vector2( 38.75, 40 )
+extents = Vector2( 89.5, 83 )
 
 [node name="Enemy" type="KinematicBody2D" groups=["Enemy"]]
 script = ExtResource( 2 )
 
 [node name="HitBox" type="CollisionShape2D" parent="."]
-position = Vector2( 0, -1 )
+position = Vector2( -3.5, 33.5 )
 shape = SubResource( 2 )
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
 frames = SubResource( 1 )
-animation = "Idle"
+animation = "ground_moving"
 
 [node name="PatrolTime" type="Timer" parent="."]
 wait_time = 2.0
 
+[node name="HitTimer" type="Timer" parent="."]
+wait_time = 0.5
+one_shot = true
+
 [node name="DamageHitBox" type="Area2D" parent="."]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DamageHitBox"]
-position = Vector2( -0.75, -1 )
+position = Vector2( -2.5, 35 )
 shape = SubResource( 3 )
 
 [connection signal="timeout" from="PatrolTime" to="." method="_on_PatrolTime_timeout"]
+[connection signal="timeout" from="HitTimer" to="." method="_on_HitTimer_timeout"]
 [connection signal="body_entered" from="DamageHitBox" to="." method="_on_DamageHitBox_body_entered"]

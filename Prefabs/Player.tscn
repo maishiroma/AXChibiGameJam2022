@@ -1,63 +1,92 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=29 format=2]
 
-[ext_resource path="res://Art/Dummy/Dummy_Player.png" type="Texture" id=1]
+[ext_resource path="res://Art/Player/Hammer_Swing_Stay/Player_HammerSwing_Stay_3.png" type="Texture" id=1]
 [ext_resource path="res://Scripts/Player.gd" type="Script" id=2]
-[ext_resource path="res://Art/Dummy/Dummy_Player_Hammer_Deploy_Combine.png" type="Texture" id=3]
-[ext_resource path="res://Art/Dummy/Dummy_Player_Walk.png" type="Texture" id=4]
-[ext_resource path="res://Art/Dummy/Dummy_Player_Hammer_Combined.png" type="Texture" id=5]
-[ext_resource path="res://Art/Dummy/Dummy_Player_Jump_Hammer.png" type="Texture" id=6]
+[ext_resource path="res://Art/Player/MoveHorizontal/Player_MoveHorizontal_3.png" type="Texture" id=3]
+[ext_resource path="res://Art/Player/Jump/Player_Jump_2.png" type="Texture" id=4]
+[ext_resource path="res://Art/Player/Jump/Player_Jump_1.png" type="Texture" id=5]
+[ext_resource path="res://Art/Player/Idle/Player_Idle_1.png" type="Texture" id=6]
+[ext_resource path="res://Art/Player/Hammer_Swing_Stay/Player_HammerSwing_Stay_2.png" type="Texture" id=7]
+[ext_resource path="res://Art/Player/MoveHorizontal/Player_MoveHorizontal_1.png" type="Texture" id=8]
+[ext_resource path="res://Art/Player/HighJump/Player_HighJump_2.png" type="Texture" id=9]
+[ext_resource path="res://Art/Player/Idle/Player_Idle_2.png" type="Texture" id=10]
+[ext_resource path="res://Art/Player/Idle/Player_Idle_3.png" type="Texture" id=11]
+[ext_resource path="res://Art/Player/Hammer_Swing_Stay/Player_HammerSwing_Stay_1.png" type="Texture" id=12]
+[ext_resource path="res://Art/Player/MoveHorizontal/Player_MoveHorizontal_2.png" type="Texture" id=13]
+[ext_resource path="res://Art/Player/HighJump/Player_HighJump_1.png" type="Texture" id=14]
+[ext_resource path="res://Art/Player/Jump/Player_Jump_3.png" type="Texture" id=15]
+[ext_resource path="res://Art/Player/HighJump/Player_HighJump_3.png" type="Texture" id=16]
+[ext_resource path="res://Art/Player/Falling/Player_Falling_1.png" type="Texture" id=17]
+[ext_resource path="res://Art/Player/Hammer_Swing_Start/Player_HammerSwing_Start_2.png" type="Texture" id=18]
+[ext_resource path="res://Art/Player/Hammer_Swing_Start/Player_HammerSwing_Start_1.png" type="Texture" id=19]
+[ext_resource path="res://Art/Player/Hammer_Swing_Start/Player_HammerSwing_Start_3.png" type="Texture" id=20]
+[ext_resource path="res://Art/Player/Falling/Player_Falling_3.png" type="Texture" id=21]
+[ext_resource path="res://Art/Player/Falling/Player_Falling_2.png" type="Texture" id=22]
+[ext_resource path="res://SFX/cartoon-jump-6462.mp3" type="AudioStream" id=23]
+[ext_resource path="res://SFX/vibrating-thud-39536.mp3" type="AudioStream" id=24]
+[ext_resource path="res://SFX/game-fx-9-40197.mp3" type="AudioStream" id=25]
 
 [sub_resource type="RectangleShape2D" id=3]
-extents = Vector2( 31.5, 57 )
+extents = Vector2( 120, 151 )
 
 [sub_resource type="SpriteFrames" id=2]
 animations = [ {
-"frames": [ ExtResource( 3 ) ],
-"loop": true,
-"name": "deploy_hammer",
+"frames": [ ExtResource( 19 ), ExtResource( 18 ), ExtResource( 20 ) ],
+"loop": false,
+"name": "deploy_hammer_start",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 1 ) ],
+"frames": [ ExtResource( 12 ), ExtResource( 7 ), ExtResource( 1 ) ],
+"loop": true,
+"name": "deploy_hammer_stay",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 17 ), ExtResource( 22 ), ExtResource( 21 ) ],
+"loop": true,
+"name": "falling",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 6 ), ExtResource( 10 ), ExtResource( 11 ) ],
 "loop": true,
 "name": "idle",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 6 ) ],
-"loop": true,
+"frames": [ ExtResource( 5 ), ExtResource( 4 ), ExtResource( 15 ) ],
+"loop": false,
 "name": "jump",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 5 ) ],
+"frames": [ ExtResource( 14 ), ExtResource( 9 ), ExtResource( 16 ) ],
 "loop": true,
 "name": "jump_hammer",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 4 ) ],
+"frames": [ ExtResource( 8 ), ExtResource( 13 ), ExtResource( 3 ) ],
 "loop": true,
 "name": "move",
 "speed": 5.0
 } ]
 
 [sub_resource type="RectangleShape2D" id=4]
-extents = Vector2( 24.5, 31.5 )
+extents = Vector2( 78.75, 62.75 )
 
 [node name="Player" type="KinematicBody2D" groups=["Player"]]
+z_index = 5
 script = ExtResource( 2 )
 
 [node name="PlayerHitbox" type="CollisionShape2D" parent="."]
-position = Vector2( -0.5, 3 )
+position = Vector2( -1, 18 )
 shape = SubResource( 3 )
 
 [node name="PlayerSprite" type="AnimatedSprite" parent="."]
-scale = Vector2( 0.2, 0.2 )
 frames = SubResource( 2 )
-animation = "deploy_hammer"
+animation = "idle"
+frame = 2
 
 [node name="HammerHitBox" type="Area2D" parent="."]
-position = Vector2( 28.5, 36 )
+position = Vector2( 100, 200 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="HammerHitBox"]
-position = Vector2( 0, 19.5 )
 shape = SubResource( 4 )
 disabled = true
 
@@ -66,9 +95,24 @@ wait_time = 0.1
 one_shot = true
 
 [node name="HammerInput" type="Timer" parent="HammerHitBox"]
-wait_time = 0.3
+wait_time = 0.5
 one_shot = true
 
+[node name="PlayerSounds" type="Node2D" parent="."]
+
+[node name="Jump" type="AudioStreamPlayer" parent="PlayerSounds"]
+stream = ExtResource( 23 )
+volume_db = -5.0
+
+[node name="HammerHit" type="AudioStreamPlayer" parent="PlayerSounds"]
+stream = ExtResource( 24 )
+volume_db = -5.0
+
+[node name="Die" type="AudioStreamPlayer" parent="PlayerSounds"]
+stream = ExtResource( 25 )
+volume_db = -5.0
+
+[connection signal="animation_finished" from="PlayerSprite" to="." method="_on_PlayerSprite_animation_finished"]
 [connection signal="body_entered" from="HammerHitBox" to="." method="_on_HammerHitBox_body_entered"]
 [connection signal="timeout" from="HammerHitBox/HammerJumpCooldown" to="." method="_on_HammerJumpCooldown_timeout"]
 [connection signal="timeout" from="HammerHitBox/HammerInput" to="." method="_on_HammerInput_timeout"]

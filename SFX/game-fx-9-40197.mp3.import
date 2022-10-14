@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/game-fx-9-40197.mp3-c52e0f7021b4b59b4af4ee2aecbe0788.mp3str"
+
+[deps]
+
+source_file="res://SFX/game-fx-9-40197.mp3"
+dest_files=[ "res://.import/game-fx-9-40197.mp3-c52e0f7021b4b59b4af4ee2aecbe0788.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0
