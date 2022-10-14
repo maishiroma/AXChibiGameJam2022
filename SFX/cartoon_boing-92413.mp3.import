@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/cartoon_boing-92413.mp3-443a1058518d0074f2ab3ef580a1e275.mp3str"
+
+[deps]
+
+source_file="res://SFX/cartoon_boing-92413.mp3"
+dest_files=[ "res://.import/cartoon_boing-92413.mp3-443a1058518d0074f2ab3ef580a1e275.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

@@ -152,7 +152,7 @@ func _on_HammerHitBox_body_entered(body):
 		# We pass an extra argument to the signal
 		emit_signal("hit_enemy", body.name)
 		$HammerHitBox/HammerJumpCooldown.start()
-		$PlayerSounds/HammerHit.play()
+		$PlayerSounds/EnemyBounce.play()
 	elif body.is_in_group("SpringDoor"):
 		is_high_jump = true
 		is_deploying_hammer = false

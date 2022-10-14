@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=2]
+[gd_scene load_steps=30 format=2]
 
 [ext_resource path="res://Art/Player/Hammer_Swing_Stay/Player_HammerSwing_Stay_3.png" type="Texture" id=1]
 [ext_resource path="res://Scripts/Player.gd" type="Script" id=2]
@@ -25,6 +25,7 @@
 [ext_resource path="res://SFX/cartoon-jump-6462.mp3" type="AudioStream" id=23]
 [ext_resource path="res://SFX/vibrating-thud-39536.mp3" type="AudioStream" id=24]
 [ext_resource path="res://SFX/game-fx-9-40197.mp3" type="AudioStream" id=25]
+[ext_resource path="res://SFX/cartoon_boing-92413.mp3" type="AudioStream" id=26]
 
 [sub_resource type="RectangleShape2D" id=3]
 extents = Vector2( 120, 151 )
@@ -111,6 +112,10 @@ volume_db = -5.0
 [node name="Die" type="AudioStreamPlayer" parent="PlayerSounds"]
 stream = ExtResource( 25 )
 volume_db = -5.0
+
+[node name="EnemyBounce" type="AudioStreamPlayer" parent="PlayerSounds"]
+stream = ExtResource( 26 )
+volume_db = 10.0
 
 [connection signal="animation_finished" from="PlayerSprite" to="." method="_on_PlayerSprite_animation_finished"]
 [connection signal="body_entered" from="HammerHitBox" to="." method="_on_HammerHitBox_body_entered"]

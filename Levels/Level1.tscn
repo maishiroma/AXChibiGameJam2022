@@ -213,6 +213,19 @@ E / Z while FALLING = Hammer Swing
 
 Hammer Swing BEFORE landing = ???"
 
+[node name="Title" type="Label" parent="."]
+margin_left = 1479.0
+margin_top = -325.0
+margin_right = 2024.0
+margin_bottom = 109.0
+custom_fonts/font = SubResource( 11 )
+text = "GhostBop Demo
+AXMiniGameJam2022
+
+by Kaabiikaze
+(Credits in README!)"
+align = 1
+
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 layer = -10
 
@@ -231,7 +244,7 @@ __meta__ = {
 }
 
 [node name="Player" parent="." instance=ExtResource( 2 )]
-position = Vector2( -310, 127 )
+position = Vector2( -64, 258 )
 scale = Vector2( 0.3, 0.3 )
 move_speed = 200.0
 jump_strength = 500.0
