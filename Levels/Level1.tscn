@@ -309,6 +309,7 @@ patrol_time = 1
 [node name="SpringDoor" parent="." instance=ExtResource( 15 )]
 position = Vector2( 19241, -182 )
 scale = Vector2( 0.5, 0.5 )
+scene_to_load = "EndScreen"
 
 [connection signal="hit_enemy" from="Player" to="Enemies/Enemy" method="_on_Player_hit_enemy"]
 [connection signal="hit_enemy" from="Player" to="Enemies/Enemy2" method="_on_Player_hit_enemy"]
