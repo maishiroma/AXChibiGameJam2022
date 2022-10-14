@@ -75,7 +75,7 @@ func get_input():
 		is_jumping = Input.is_action_just_pressed("Jump") and is_on_floor()
 		is_jump_canceled = Input.is_action_just_released("Jump") and move_velocity.y < 0.0
 		
-		if Input.is_action_just_pressed("deploy_hammer") and is_falling and numb_high_jumps < max_high_jumps:
+		if Input.is_action_just_pressed("deploy_hammer") and is_falling:
 			is_deploying_hammer = true
 			$PlayerSprite.animation = "deploy_hammer_start"
 			$PlayerSprite.speed_scale = 3
@@ -108,8 +108,6 @@ func animate_player():
 # Saves the current position of the player and camera
 func save_spawn():
 	saved_checkpoint = position
-	for curr_node in get_tree().get_nodes_in_group("MainCamera"):
-		curr_node.saved_camera_position = curr_node.position
 
 # Respawns the player back to the last saved location
 func respawn():
@@ -122,10 +120,9 @@ func respawn():
 	is_deploying_hammer = false
 	curr_high_jump_strength = 0.0
 	numb_high_jumps = 0
+	move_velocity = Vector2.ZERO
 	
 	position = saved_checkpoint
-	for curr_node in get_tree().get_nodes_in_group("MainCamera"):
-		curr_node.position = curr_node.saved_camera_position
 
 func play_sound_effects():
 	if is_jumping and !$PlayerSounds/Jump.playing:
@@ -144,7 +141,8 @@ func _on_HammerHitBox_body_entered(body):
 			curr_high_jump_strength = lerp(curr_high_jump_strength, jump_strength * 2, high_jump_mod)
 			$HammerHitBox/HammerJumpCooldown.start()
 		else:
-			is_high_jump = false
+			curr_high_jump_strength = lerp(curr_high_jump_strength, jump_strength / 100, high_jump_mod)
+			$HammerHitBox/HammerJumpCooldown.start()
 		$PlayerSounds/HammerHit.play()
 	elif body.is_in_group("Enemy"):
 		numb_high_jumps = 1
@@ -154,13 +152,14 @@ func _on_HammerHitBox_body_entered(body):
 		# We pass an extra argument to the signal
 		emit_signal("hit_enemy", body.name)
 		$HammerHitBox/HammerJumpCooldown.start()
-		$PlayerSounds/HammerHit.play()
+		$PlayerSounds/EnemyBounce.play()
 	elif body.is_in_group("SpringDoor"):
 		is_high_jump = true
 		is_deploying_hammer = false
 		can_input = false
 		move_velocity.x = 0.0
 		curr_high_jump_strength = lerp(curr_high_jump_strength, jump_strength * 4, high_jump_mod)
+		$MainCamera.smoothing_speed = 0.1
 		emit_signal("spring_door_activate")
 		$PlayerSounds/HammerHit.play()
 
@@ -173,9 +172,11 @@ func _on_Checkpoint_activated_checkpoint():
 	save_spawn()
 
 # On touching a Death Plane, we move back to the last checkpoint we touched
-func _on_DeathPlane_body_entered(_body):
-	$PlayerSounds/Die.play()
-	respawn()
+func _on_DeathPlane_body_entered(body):
+	if body.is_in_group("Player"):
+		$PlayerSounds/Die.play()
+		$MainCamera.smoothing_speed = 10;
+		respawn()
 
 # After a set time, we disenage the hammer
 func _on_HammerInput_timeout():
@@ -184,6 +185,7 @@ func _on_HammerInput_timeout():
 # When the player touches an enemy, they are sent back to the last spawn
 func _on_Enemy_damage_player():
 	$PlayerSounds/Die.play()
+	$MainCamera.smoothing_speed = 10;
 	respawn()
 
 # When this animation finishes playing, we go to the deploy_hammer_animation
@@ -191,3 +193,6 @@ func _on_PlayerSprite_animation_finished():
 	if $PlayerSprite.get_animation() == "deploy_hammer_start":
 		$PlayerSprite.speed_scale = 1
 		$PlayerSprite.animation = "deploy_hammer_stay"
+
+func _on_Die_finished():
+	$MainCamera.smoothing_speed = 1;

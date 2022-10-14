@@ -7,6 +7,7 @@ const UP_DIRECTION = Vector2.UP
 export var move_speed = 2000.0
 export var gravity_scale = 4500.0
 export var is_horizontal = true
+export var patrol_time = 2
 
 var move_direction = 0
 var move_velocity = Vector2.ZERO
@@ -25,6 +26,7 @@ func _ready():
 		else:
 			move_direction = -1
 	
+	$PatrolTime.wait_time = patrol_time
 	$PatrolTime.start()
 
 func animation_set():
