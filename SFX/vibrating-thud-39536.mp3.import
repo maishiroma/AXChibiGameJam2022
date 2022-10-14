@@ -11,5 +11,5 @@ dest_files=[ "res://.import/vibrating-thud-39536.mp3-e11d16211d76bcb01b9707659dc
 
 [params]
 
-loop=true
+loop=false
 loop_offset=0

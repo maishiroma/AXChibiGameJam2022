@@ -6,7 +6,6 @@
 extents = Vector2( 74, 614 )
 
 [node name="MainCamera" type="Camera2D" groups=["MainCamera"]]
-position = Vector2( 506, 208 )
 current = true
 zoom = Vector2( 1.5, 1.5 )
 smoothing_enabled = true

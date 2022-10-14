@@ -36,6 +36,7 @@ func _ready():
 
 func _process(_delta):
 	animate_player()
+	play_sound_effects()
 	
 	# Activates/deactivates the hitbox
 	$HammerHitBox/CollisionShape2D.disabled = !is_deploying_hammer
@@ -126,6 +127,13 @@ func respawn():
 	for curr_node in get_tree().get_nodes_in_group("MainCamera"):
 		curr_node.position = curr_node.saved_camera_position
 
+func play_sound_effects():
+	if is_jumping and !$PlayerSounds/Jump.playing:
+		$PlayerSounds/Jump.play()
+	
+	if is_on_floor():
+		$PlayerSounds/Jump.stop()
+
 # If we hit a platform while the hammer is out, we perform a high jump
 func _on_HammerHitBox_body_entered(body):
 	if body.is_in_group("Ground"):
@@ -137,6 +145,7 @@ func _on_HammerHitBox_body_entered(body):
 			$HammerHitBox/HammerJumpCooldown.start()
 		else:
 			is_high_jump = false
+		$PlayerSounds/HammerHit.play()
 	elif body.is_in_group("Enemy"):
 		numb_high_jumps = 1
 		is_deploying_hammer = false
@@ -145,6 +154,7 @@ func _on_HammerHitBox_body_entered(body):
 		# We pass an extra argument to the signal
 		emit_signal("hit_enemy", body.name)
 		$HammerHitBox/HammerJumpCooldown.start()
+		$PlayerSounds/HammerHit.play()
 	elif body.is_in_group("SpringDoor"):
 		is_high_jump = true
 		is_deploying_hammer = false
@@ -152,6 +162,7 @@ func _on_HammerHitBox_body_entered(body):
 		move_velocity.x = 0.0
 		curr_high_jump_strength = lerp(curr_high_jump_strength, jump_strength * 4, high_jump_mod)
 		emit_signal("spring_door_activate")
+		$PlayerSounds/HammerHit.play()
 
 # When the timer ends, we stop the higher jump
 func _on_HammerJumpCooldown_timeout():
@@ -163,6 +174,7 @@ func _on_Checkpoint_activated_checkpoint():
 
 # On touching a Death Plane, we move back to the last checkpoint we touched
 func _on_DeathPlane_body_entered(_body):
+	$PlayerSounds/Die.play()
 	respawn()
 
 # After a set time, we disenage the hammer
@@ -171,6 +183,7 @@ func _on_HammerInput_timeout():
 
 # When the player touches an enemy, they are sent back to the last spawn
 func _on_Enemy_damage_player():
+	$PlayerSounds/Die.play()
 	respawn()
 
 # When this animation finishes playing, we go to the deploy_hammer_animation

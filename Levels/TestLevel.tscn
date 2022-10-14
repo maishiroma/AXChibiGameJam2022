@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://Prefabs/DummyPlatform.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Prefabs/Player.tscn" type="PackedScene" id=2]
@@ -7,10 +7,27 @@
 [ext_resource path="res://Prefabs/DeathPlane.tscn" type="PackedScene" id=5]
 [ext_resource path="res://Prefabs/Enemy.tscn" type="PackedScene" id=6]
 [ext_resource path="res://Prefabs/SpringDoor.tscn" type="PackedScene" id=7]
+[ext_resource path="res://SFX/Music/minimal-inspiring-ambient-121005.mp3" type="AudioStream" id=8]
+[ext_resource path="res://Art/LevelGrometry/Background_Edited.png" type="Texture" id=9]
 
 [node name="TestLevel" type="Node2D"]
 
+[node name="BGM" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 8 )
+volume_db = -10.0
+autoplay = true
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+layer = -10
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer"]
+margin_right = 1024.0
+margin_bottom = 600.0
+texture = ExtResource( 9 )
+expand = true
+
 [node name="Platforms" type="Node2D" parent="."]
+position = Vector2( -328, -174 )
 
 [node name="Platform" parent="Platforms" instance=ExtResource( 1 )]
 position = Vector2( 485, 594 )
@@ -25,7 +42,7 @@ position = Vector2( 1402, 594 )
 scale = Vector2( 1.00199, 0.311321 )
 
 [node name="Player" parent="." instance=ExtResource( 2 )]
-position = Vector2( 329, 448 )
+position = Vector2( 4, -3 )
 scale = Vector2( 0.2, 0.2 )
 move_speed = 200.0
 jump_strength = 500.0
@@ -33,11 +50,10 @@ gravity_scale = 1000.0
 max_high_jumps = 2
 
 [node name="MainCamera" parent="." instance=ExtResource( 3 )]
-position = Vector2( 600, 208 )
 camera_scroll_amount = 100
 
 [node name="DeathPlane" parent="." instance=ExtResource( 5 )]
-position = Vector2( 93, 967 )
+position = Vector2( -102, 696 )
 scale = Vector2( 4.96, 1 )
 
 [node name="Enemy" parent="." instance=ExtResource( 6 )]
@@ -47,11 +63,11 @@ move_speed = -100.0
 is_horizontal = false
 
 [node name="Checkpoint" parent="." instance=ExtResource( 4 )]
-position = Vector2( -549, 498 )
+position = Vector2( -640, 294 )
 scale = Vector2( 0.3, 0.3 )
 
 [node name="SpringDoor" parent="." instance=ExtResource( 7 )]
-position = Vector2( 852, 480 )
+position = Vector2( 635, 294 )
 scale = Vector2( 0.5, 0.5 )
 scene_to_load = "TestLevel2"
 
