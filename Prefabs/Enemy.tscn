@@ -11,7 +11,7 @@
 [ext_resource path="res://Art/Enemy/Enemy_Air_Hit.png" type="Texture" id=9]
 
 [sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 83.5, 62.5 )
+extents = Vector2( 65, 48 )
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
@@ -37,13 +37,13 @@ animations = [ {
 } ]
 
 [sub_resource type="RectangleShape2D" id=3]
-extents = Vector2( 89.5, 83 )
+extents = Vector2( 74.5, 54 )
 
 [node name="Enemy" type="KinematicBody2D" groups=["Enemy"]]
 script = ExtResource( 2 )
 
 [node name="HitBox" type="CollisionShape2D" parent="."]
-position = Vector2( -3.5, 33.5 )
+position = Vector2( -3, 37 )
 shape = SubResource( 2 )
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
@@ -60,7 +60,7 @@ one_shot = true
 [node name="DamageHitBox" type="Area2D" parent="."]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DamageHitBox"]
-position = Vector2( -2.5, 35 )
+position = Vector2( -2.5, 38 )
 shape = SubResource( 3 )
 
 [connection signal="timeout" from="PatrolTime" to="." method="_on_PatrolTime_timeout"]

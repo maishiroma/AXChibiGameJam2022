@@ -30,9 +30,19 @@ var is_idle = false	# are we standing still
 var is_running = false # are we moving?
 var is_deploying_hammer = false # are we deploying the hammer?
 
+var MainCameraNode
+
 # Saves the player's initial position as the initial checkpoint
 func _ready():
 	_on_Checkpoint_activated_checkpoint()
+	
+	# Cool trick to auto connect nodes together dynamically
+	# Since some of these can be spawned dynamically
+	if get_tree().get_nodes_in_group("MainCamera").size() == 1:
+		MainCameraNode = get_tree().get_nodes_in_group("MainCamera")[0]
+	if get_tree().get_nodes_in_group("SpringDoor").size() > 0:
+		for currOne in get_tree().get_nodes_in_group("SpringDoor"):
+			self.connect("spring_door_activate", currOne, "_on_Player_spring_door_activate")
 
 func _process(_delta):
 	animate_player()
@@ -159,7 +169,7 @@ func _on_HammerHitBox_body_entered(body):
 		can_input = false
 		move_velocity.x = 0.0
 		curr_high_jump_strength = lerp(curr_high_jump_strength, jump_strength * 4, high_jump_mod)
-		$MainCamera.smoothing_speed = 0.1
+		MainCameraNode.smoothing_speed = 0.1
 		emit_signal("spring_door_activate")
 		$PlayerSounds/HammerHit.play()
 
@@ -175,7 +185,7 @@ func _on_Checkpoint_activated_checkpoint():
 func _on_DeathPlane_body_entered(body):
 	if body.is_in_group("Player"):
 		$PlayerSounds/Die.play()
-		$MainCamera.smoothing_speed = 10;
+		MainCameraNode.smoothing_speed = 10;
 		respawn()
 
 # After a set time, we disenage the hammer
@@ -185,7 +195,7 @@ func _on_HammerInput_timeout():
 # When the player touches an enemy, they are sent back to the last spawn
 func _on_Enemy_damage_player():
 	$PlayerSounds/Die.play()
-	$MainCamera.smoothing_speed = 10;
+	MainCameraNode.smoothing_speed = 10;
 	respawn()
 
 # When this animation finishes playing, we go to the deploy_hammer_animation
@@ -195,4 +205,4 @@ func _on_PlayerSprite_animation_finished():
 		$PlayerSprite.animation = "deploy_hammer_stay"
 
 func _on_Die_finished():
-	$MainCamera.smoothing_speed = 1;
+	MainCameraNode.smoothing_speed = 1;
