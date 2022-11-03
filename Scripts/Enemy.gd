@@ -33,6 +33,7 @@ func _ready():
 	# Since some of these can be spawned dynamically
 	if get_tree().get_nodes_in_group("Player").size() == 1:
 		var playerNode = get_tree().get_nodes_in_group("Player")[0]
+		# warning-ignore:return_value_discarded
 		self.connect("damage_player", playerNode, "_on_Enemy_damage_player")
 		playerNode.connect("hit_enemy", self, "_on_Player_hit_enemy")
 

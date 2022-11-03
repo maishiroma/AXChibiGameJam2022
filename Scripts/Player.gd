@@ -3,6 +3,7 @@ extends KinematicBody2D
 
 signal spring_door_activate
 signal hit_enemy(collider_name)
+signal hammer_interact
 
 # What direction is the player going UP
 const UP_DIRECTION = Vector2.UP
@@ -42,11 +43,15 @@ func _ready():
 		MainCameraNode = get_tree().get_nodes_in_group("MainCamera")[0]
 	if get_tree().get_nodes_in_group("SpringDoor").size() > 0:
 		for currOne in get_tree().get_nodes_in_group("SpringDoor"):
+			# warning-ignore:return_value_discarded
 			self.connect("spring_door_activate", currOne, "_on_Player_spring_door_activate")
+	if get_tree().get_nodes_in_group("HammerInteract").size() > 0:
+		for currOne in get_tree().get_nodes_in_group("HammerInteract"):
+			# warning-ignore:return_value_discarded
+			self.connect("hammer_interact", currOne, "_on_Player_hammer_hit")	
 
 func _process(_delta):
 	animate_player()
-	play_sound_effects()
 	
 	# Activates/deactivates the hitbox
 	$HammerHitBox/CollisionShape2D.disabled = !is_deploying_hammer
@@ -82,7 +87,12 @@ func _physics_process(delta):
 # Take player input and modify the move_velocity accordingly
 func get_input():
 	if can_input:
-		is_jumping = Input.is_action_just_pressed("Jump") and is_on_floor()
+		if Input.is_action_just_pressed("Jump") and is_on_floor():
+			is_jumping = true
+			$PlayerSprite.animation = "jump"
+			$PlayerSounds/Jump.play()
+		else:
+			is_jumping = false
 		is_jump_canceled = Input.is_action_just_released("Jump") and move_velocity.y < 0.0
 		
 		if Input.is_action_just_pressed("deploy_hammer") and is_falling:
@@ -106,9 +116,7 @@ func animate_player():
 		elif is_idle:
 			$PlayerSprite.animation = "idle"
 	else:
-		if is_jumping:
-			$PlayerSprite.animation = "jump"
-		elif is_high_jump:
+		if is_high_jump:
 			$PlayerSprite.animation = "jump_hammer"
 		elif is_falling and !is_deploying_hammer:
 			$PlayerSprite.animation = "falling"
@@ -134,16 +142,17 @@ func respawn():
 	
 	position = saved_checkpoint
 
-func play_sound_effects():
-	if is_jumping and !$PlayerSounds/Jump.playing:
-		$PlayerSounds/Jump.play()
-	
-	if is_on_floor():
-		$PlayerSounds/Jump.stop()
-
 # If we hit a platform while the hammer is out, we perform a high jump
 func _on_HammerHitBox_body_entered(body):
-	if body.is_in_group("Ground"):
+	if body.is_in_group("HammerInteract"):
+		is_deploying_hammer = false
+		is_high_jump = true
+		numb_high_jumps = 1
+		curr_high_jump_strength = lerp(curr_high_jump_strength, jump_strength * 1.2, high_jump_mod)
+		emit_signal("hammer_interact")
+		$PlayerSounds/HammerHit.play()
+		$HammerHitBox/HammerJumpCooldown.start()
+	elif body.is_in_group("Ground"):
 		is_deploying_hammer = false
 		is_high_jump = true
 		if numb_high_jumps < max_high_jumps:
