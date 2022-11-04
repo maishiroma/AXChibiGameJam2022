@@ -69,7 +69,7 @@ animations = [ {
 } ]
 
 [sub_resource type="RectangleShape2D" id=4]
-extents = Vector2( 78.75, 62.75 )
+extents = Vector2( 159.5, 62.75 )
 
 [node name="Player" type="KinematicBody2D" groups=["Player"]]
 z_index = 5
@@ -88,6 +88,7 @@ frame = 2
 position = Vector2( 100, 200 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="HammerHitBox"]
+position = Vector2( -103.5, 0 )
 shape = SubResource( 4 )
 disabled = true
 
