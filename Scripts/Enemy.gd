@@ -8,6 +8,7 @@ export var move_speed = 2000.0
 export var gravity_scale = 4500.0
 export var is_horizontal = true
 export var patrol_time = 2
+export var bounce_strength = 505.5
 
 var move_direction = 0
 var move_velocity = Vector2.ZERO

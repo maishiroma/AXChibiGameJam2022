@@ -1,29 +1,53 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=11 format=2]
 
-[ext_resource path="res://icon.png" type="Texture" id=1]
+[ext_resource path="res://Art/BreakableGround/BreakableBlock_Idle.png" type="Texture" id=1]
 [ext_resource path="res://Scripts/BreakableGround.gd" type="Script" id=2]
+[ext_resource path="res://Art/BreakableGround/BreakableBlock_Break_6.png" type="Texture" id=3]
+[ext_resource path="res://Art/BreakableGround/BreakableBlock_Break_4.png" type="Texture" id=4]
+[ext_resource path="res://Art/BreakableGround/BreakableBlock_Break_2.png" type="Texture" id=5]
+[ext_resource path="res://Art/BreakableGround/BreakableBlock_Break_5.png" type="Texture" id=6]
+[ext_resource path="res://Art/BreakableGround/BreakableBlock_Break_1.png" type="Texture" id=7]
+[ext_resource path="res://Art/BreakableGround/BreakableBlock_Break_3.png" type="Texture" id=8]
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
+"frames": [ ExtResource( 7 ), ExtResource( 5 ), ExtResource( 8 ), ExtResource( 4 ), ExtResource( 6 ), ExtResource( 3 ) ],
+"loop": true,
+"name": "break",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 3 ) ],
+"loop": true,
+"name": "empty",
+"speed": 5.0
+}, {
 "frames": [ ExtResource( 1 ) ],
 "loop": true,
-"name": "default",
+"name": "idle",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 3 ), ExtResource( 6 ), ExtResource( 4 ), ExtResource( 8 ), ExtResource( 5 ), ExtResource( 7 ) ],
+"loop": true,
+"name": "revert",
 "speed": 5.0
 } ]
 
 [sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 33.5, 33 )
+extents = Vector2( 32, 25 )
 
 [node name="BreakableGround" type="StaticBody2D" groups=["HammerInteract"]]
 script = ExtResource( 2 )
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
 frames = SubResource( 1 )
+animation = "idle"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2( -0.5, 0 )
+position = Vector2( 0, 5 )
 shape = SubResource( 2 )
 
 [node name="Timer" type="Timer" parent="."]
+one_shot = true
 
+[connection signal="animation_finished" from="AnimatedSprite" to="." method="_on_AnimatedSprite_animation_finished"]
 [connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]

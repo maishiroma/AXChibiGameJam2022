@@ -1,9 +1,9 @@
 # This allows for movement by force
 extends KinematicBody2D
 
-signal spring_door_activate
+signal spring_door_activate(collider_name)
 signal hit_enemy(collider_name)
-signal hammer_interact
+signal hammer_interact(collider_name)
 
 # What direction is the player going UP
 const UP_DIRECTION = Vector2.UP
@@ -14,6 +14,8 @@ export var jump_strength = 2000.0
 export var gravity_scale = 4500.0
 export var high_jump_mod = 0.5
 export var max_high_jumps = 3
+export var ground_bounce = 4000.0
+export var weak_ground_bounce = 400.0
 
 # Private variables
 var move_velocity = Vector2.ZERO
@@ -142,14 +144,20 @@ func respawn():
 	
 	position = saved_checkpoint
 
+func get_bounce_height(node_name, group_name):
+	for curr_node in get_tree().get_nodes_in_group(group_name):
+		if curr_node.name == node_name:
+			return curr_node.bounce_strength
+	return ground_bounce
+
 # If we hit a platform while the hammer is out, we perform a high jump
 func _on_HammerHitBox_body_entered(body):
 	if body.is_in_group("HammerInteract"):
 		is_deploying_hammer = false
 		is_high_jump = true
 		numb_high_jumps = 1
-		curr_high_jump_strength = lerp(curr_high_jump_strength, jump_strength * 1.2, high_jump_mod)
-		emit_signal("hammer_interact")
+		curr_high_jump_strength = lerp(curr_high_jump_strength, get_bounce_height(body.name, "HammerInteract"), high_jump_mod)
+		emit_signal("hammer_interact", body.name)
 		$PlayerSounds/HammerHit.play()
 		$HammerHitBox/HammerJumpCooldown.start()
 	elif body.is_in_group("Ground"):
@@ -157,17 +165,17 @@ func _on_HammerHitBox_body_entered(body):
 		is_high_jump = true
 		if numb_high_jumps < max_high_jumps:
 			numb_high_jumps += 1
-			curr_high_jump_strength = lerp(curr_high_jump_strength, jump_strength * 2, high_jump_mod)
+			curr_high_jump_strength = lerp(curr_high_jump_strength, ground_bounce, high_jump_mod)
 			$HammerHitBox/HammerJumpCooldown.start()
 		else:
-			curr_high_jump_strength = lerp(curr_high_jump_strength, jump_strength / 100, high_jump_mod)
+			curr_high_jump_strength = lerp(curr_high_jump_strength, weak_ground_bounce, high_jump_mod)
 			$HammerHitBox/HammerJumpCooldown.start()
 		$PlayerSounds/HammerHit.play()
 	elif body.is_in_group("Enemy"):
 		numb_high_jumps = 1
 		is_deploying_hammer = false
 		is_high_jump = true
-		curr_high_jump_strength = lerp(curr_high_jump_strength, jump_strength * 1.1, high_jump_mod)
+		curr_high_jump_strength = lerp(curr_high_jump_strength, get_bounce_height(body.name, "Enemy"), high_jump_mod)
 		# We pass an extra argument to the signal
 		emit_signal("hit_enemy", body.name)
 		$HammerHitBox/HammerJumpCooldown.start()
@@ -177,9 +185,9 @@ func _on_HammerHitBox_body_entered(body):
 		is_deploying_hammer = false
 		can_input = false
 		move_velocity.x = 0.0
-		curr_high_jump_strength = lerp(curr_high_jump_strength, jump_strength * 4, high_jump_mod)
+		curr_high_jump_strength = lerp(curr_high_jump_strength, get_bounce_height(body.name, "SpringDoor"), high_jump_mod)
 		MainCameraNode.smoothing_speed = 0.1
-		emit_signal("spring_door_activate")
+		emit_signal("spring_door_activate", body.name)
 		$PlayerSounds/HammerHit.play()
 
 # When the timer ends, we stop the higher jump
@@ -213,5 +221,6 @@ func _on_PlayerSprite_animation_finished():
 		$PlayerSprite.speed_scale = 1
 		$PlayerSprite.animation = "deploy_hammer_stay"
 
+# When the player is dying, what happens once it finishes
 func _on_Die_finished():
 	MainCameraNode.smoothing_speed = 1;

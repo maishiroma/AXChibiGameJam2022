@@ -2,6 +2,7 @@ extends StaticBody2D
 
 # Allows us to specify a scene file to load
 export var scene_to_load = "TestLevel"
+export var bounce_strength = 2000.0
 
 var current_scene = null
 var has_activated = false
@@ -33,8 +34,8 @@ func _deferred_goto_scene(path):
 	get_tree().set_current_scene(current_scene)
 
 # When the player activates the spring, the scene changes
-func _on_Player_spring_door_activate():
-	if !has_activated:
+func _on_Player_spring_door_activate(collider_name):
+	if !has_activated and name == collider_name:
 		has_activated = true
 		$AnimatedSprite.animation = "activate"
 		$AnimatedSprite.speed_scale = 2
