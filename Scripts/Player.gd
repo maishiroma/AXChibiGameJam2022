@@ -16,6 +16,8 @@ export var high_jump_mod = 0.5
 export var max_high_jumps = 3
 export var ground_bounce = 4000.0
 export var weak_ground_bounce = 400.0
+export var acceleration_speed = 0.05
+export var deacceleration_speed = 0.1
 
 # Private variables
 var move_velocity = Vector2.ZERO
@@ -106,8 +108,11 @@ func get_input():
 		var horizontal_direction = (Input.get_action_strength("move_right") - Input.get_action_strength("move_left"))
 		if horizontal_direction != 0:
 			$PlayerSprite.flip_h = horizontal_direction < 0
-		$HammerHitBox.position.x *= sign(horizontal_direction)
-		move_velocity.x = horizontal_direction * move_speed
+			move_velocity.x = lerp(move_velocity.x, horizontal_direction * move_speed, acceleration_speed)
+		else:
+			move_velocity.x = lerp(move_velocity.x, horizontal_direction * move_speed, deacceleration_speed)
+			if(abs(move_velocity.x) < 10.0):
+				move_velocity.x = 0
 
 # Animtes the player with sprites
 func animate_player():
@@ -155,7 +160,6 @@ func _on_HammerHitBox_body_entered(body):
 	if body.is_in_group("HammerInteract"):
 		is_deploying_hammer = false
 		is_high_jump = true
-		numb_high_jumps = 1
 		curr_high_jump_strength = lerp(curr_high_jump_strength, get_bounce_height(body.name, "HammerInteract"), high_jump_mod)
 		emit_signal("hammer_interact", body.name)
 		$PlayerSounds/HammerHit.play()
@@ -172,7 +176,6 @@ func _on_HammerHitBox_body_entered(body):
 			$HammerHitBox/HammerJumpCooldown.start()
 		$PlayerSounds/HammerHit.play()
 	elif body.is_in_group("Enemy"):
-		numb_high_jumps = 1
 		is_deploying_hammer = false
 		is_high_jump = true
 		curr_high_jump_strength = lerp(curr_high_jump_strength, get_bounce_height(body.name, "Enemy"), high_jump_mod)
