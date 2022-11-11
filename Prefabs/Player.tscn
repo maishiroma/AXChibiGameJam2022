@@ -82,7 +82,7 @@ shape = SubResource( 3 )
 [node name="PlayerSprite" type="AnimatedSprite" parent="."]
 frames = SubResource( 2 )
 animation = "idle"
-frame = 2
+frame = 1
 
 [node name="HammerHitBox" type="Area2D" parent="."]
 position = Vector2( 100, 200 )

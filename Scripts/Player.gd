@@ -117,7 +117,6 @@ func get_input():
 # Animtes the player with sprites
 func animate_player():
 	if is_on_floor():
-		$PlayerSprite.speed_scale = 1
 		if is_running:
 			$PlayerSprite.animation = "move"
 		elif is_idle:
@@ -127,7 +126,6 @@ func animate_player():
 			$PlayerSprite.animation = "jump_hammer"
 		elif is_falling and !is_deploying_hammer:
 			$PlayerSprite.animation = "falling"
-	
 	$PlayerSprite.play()
 
 # Saves the current position of the player and camera
@@ -211,6 +209,7 @@ func _on_DeathPlane_body_entered(body):
 # After a set time, we disenage the hammer
 func _on_HammerInput_timeout():
 	is_deploying_hammer = false;
+	$PlayerSprite.speed_scale = 1
 
 # When the player touches an enemy, they are sent back to the last spawn
 func _on_Enemy_damage_player():
@@ -221,7 +220,6 @@ func _on_Enemy_damage_player():
 # When this animation finishes playing, we go to the deploy_hammer_animation
 func _on_PlayerSprite_animation_finished():
 	if $PlayerSprite.get_animation() == "deploy_hammer_start":
-		$PlayerSprite.speed_scale = 1
 		$PlayerSprite.animation = "deploy_hammer_stay"
 
 # When the player is dying, what happens once it finishes
