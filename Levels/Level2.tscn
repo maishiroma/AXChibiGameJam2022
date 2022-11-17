@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=2]
+[gd_scene load_steps=23 format=2]
 
 [ext_resource path="res://Prefabs/MainCamera.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Prefabs/Player.tscn" type="PackedScene" id=2]
@@ -14,7 +14,6 @@
 [ext_resource path="res://Prefabs/InvisibleWall.tscn" type="PackedScene" id=12]
 [ext_resource path="res://Prefabs/DeathPlane.tscn" type="PackedScene" id=13]
 [ext_resource path="res://Prefabs/BreakableGround.tscn" type="PackedScene" id=14]
-[ext_resource path="res://Prefabs/SquishPlatform.tscn" type="PackedScene" id=15]
 
 [sub_resource type="ConvexPolygonShape2D" id=1]
 points = PoolVector2Array( 63, 62, 0, 62, 0, 1, 63, 1 )
@@ -371,8 +370,5 @@ bounce_strength = 150.0
 [node name="BreakableGround6" parent="BreakableBlocks" instance=ExtResource( 14 )]
 position = Vector2( 2592, -288 )
 bounce_strength = 150.0
-
-[node name="SquishPlatform" parent="." instance=ExtResource( 15 )]
-position = Vector2( 1440, -296 )
 
 [connection signal="body_entered" from="DeathPlane/DeathPlane" to="Player" method="_on_DeathPlane_body_entered"]
